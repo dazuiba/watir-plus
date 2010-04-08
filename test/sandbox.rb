@@ -6,8 +6,7 @@ WP.url_hock do|url|
   end
 end
 
-
-WP.test "用户登录  没有特殊要求", :run=>false do
+WP.test :user_login, :desc=>"用户登录  没有特殊要求", :run=>false do
   WP.goto :host=>"login", :path=>"member/login.jhtml", :params=>"login_type=3"  do|the_page|
     the_page.page_should_be? :login_page
     
@@ -17,27 +16,55 @@ WP.test "用户登录  没有特殊要求", :run=>false do
       page.login_submit.click
     end
     
-#    tpl.try(:username=>"tam_buy",:password=>"wrong") do
-#      the_page.page_should_be? :login_page
-#			
-#    end
-#
-#    tpl.try(:username=>"wrong",:password=>"tam1234") do
-#      the_page.page_should_be? :login_page
-#    end
+    #    tpl.try(:username=>"tam_buy",:password=>"wrong") do
+    #      the_page.page_should_be? :login_page
+    #
+    #    end
+    #
+    #    tpl.try(:username=>"wrong",:password=>"tam1234") do
+    #      the_page.page_should_be? :login_page
+    #    end
 
     tpl.try(:username=>"tam_buy",:password=>"tam1234") do
-      the_page.page_should_be? :itaobao_page
+      assert the_page.page_should_be?(:itaobao_page)
     end
   end
 end
 
+WP.test :search_good, :run=>false, :desc=>"搜索商品  要求能够显示商品列表，确保有多余一个商品显示出来，并且校验显示的列是有值的" do
+  WP.goto :host=>"search", :path=>"search", :params=>"q=iphone"  do|the_page|
+    the_page.page_should_be? :search_page
+    links = the_page.get_module(:result).title_links
+    assert links.size>10
+    links.map{|e|assert e.text}
+  end
+end
 
-WP.test " 搜索商品  要求能够显示商品列表，确保有多余一个商品显示出来，并且校验显示的列是有值的" do
-	 WP.goto :host=>"search", :path=>"search", :params=>"q=iphone"  do|the_page|
-	    the_page.page_should_be? :search_page
-			assert the_page.get_module(:result).list_items.size>0
-   end
+WP.test_flow "购物流程" do
+  WP.test :detail, :desc=> "显示商品详情 " do
+    WP.goto "http://item.tbsandbox.com/item_detail.jhtml?item_id=9f1aa2b9f1196c8db3e0b4353f4f9d2d&x_id=db2" do|the_page|
+      assert the_page.page_should_be?(:detail_page)
+      the_page.get_module(:result).title_links
+      the_page.checker.attrs_ok!
+    end
+  end
+   
+  WP.test :buy, :before=>:detail, :desc=> "立即购买" do
+    page = WP.current_page
+    page.get_module(:select_prop).click_all_first
+    page = page.buy_link.click
+    
+    assert page.page_should_be?(:buy_now_page)
+    puts  page.shipping_option_radios.inspect
+    page.shipping_option_radios[0].click
+    page=page.submit_button.click
+    assert page.page_should_be?(:mockalipay)
+    page.money.set "111"
+    page.submit_button.click
+    assert page.text.include?("PaidDone")
+  end
+
+  
 end
 
 

@@ -15,8 +15,12 @@ end
 
 class Util
 
+  def self.plural_string(str)
+    /s$/=~str.to_s
+  end
+
   def self.join_css(*css)
-    css.join " "
+    (css.map{|e|e.strip}.join " ").strip
   end
 	
 	def self.to_url(options)

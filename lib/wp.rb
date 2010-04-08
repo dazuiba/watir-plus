@@ -1,7 +1,9 @@
 require "wp/assert_ext"
 require "wp/element"
+require "wp/container"
 require "wp/page_module"
 require "wp/page"
+require "wp/page_checker"
 require "wp/page_finder"
 require "wp/util"
 require "wp/wp_browser"
@@ -25,6 +27,11 @@ module WP
 			@globle[key]
 		end
 		
+    def test_flow(name, options={}, &block)
+      return if options[:run]==false
+			yield
+		end
+
 		def test(name, options={}, &block)
       return if options[:run]==false
 			yield
@@ -32,8 +39,14 @@ module WP
 		
 		def goto(options)
 			B.goto Util.to_url(options)
-			yield B.current_page
+      page = B.current_page
+			yield page if block_given?
+      page
 		end
+
+    def current_page
+      B.current_page
+    end
 		
 		def create_page(name,&block)
 			B.create_page(name,&block)
@@ -42,6 +55,11 @@ module WP
     def url_hock(&block)
        self[:hocks]||=[]
        self[:hocks]<<block
+    end
+
+    def to_watir(html_elem, type=html_elem.name)
+      assert html_elem
+      B.html_element_to_watir(html_elem,type)
     end
 
 	end	

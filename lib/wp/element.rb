@@ -1,45 +1,55 @@
 class ElementCollection
-	attr_reader :elements, :container, :name, :css
+	attr_reader :elements, :container, :name, :css, :type
   include Enumerable
-	def initialize(container, name, css)
+	def initialize(container, type, name, css)
 		@container = container
 		@name = name
 		@css = css
-		@elements = []
+    @type = type
 	end
 	
-  def add_element(type, name, ele_css, &block)
-		ele_css = Util.join_css(container.abs_css, self.css, ele_css)
-		@elements << Element.create_by_css(self.container, type, name, ele_css)
-	end
+  #  def add_element(type, name, ele_css, &block)
+  #		ele_css = Util.join_css(container.abs_css, self.css, ele_css)
+  #		@elements << Element.create_by_css(self.container, type, name, ele_css)
+  #	end
 
-  def each
-    @elements.each{|e|yield e}
-  end
-	
-  def size
-    @elements.size
+  def elements
+    @elements||=container.browser.__find_ole_elements(abs_css).map { |ole_object|
+      Element.create_by_ole(container, type, name, ole_object)
+    }
   end
 
-	def method_missing(method, *args)
-		if /^add_(\w+)/ =~ method.to_s
-			assert args.size==2
-			puts "#{method}, #{args.inspect}"
-			self.add_element $1, args.first, args.last
-		elsif found =  @elements.find{|e|e.name == method}
-			found
-		else
-			super
-		end
-	end
+  def method_missing(method,*args,&block)
+    if elements.respond_to? method
+      elements.send method, *args,&block
+    else
+      super
+    end
+  end
+
+  def abs_css
+    Util.join_css(container.abs_css, css)
+  end
+
+  #	def method_missing(method, *args)
+  #		if /^add_(\w+)/ =~ method.to_s
+  #			assert args.size==2
+  #			puts "#{method}, #{args.inspect}"
+  #			self.add_element $1, args.first, args.last
+  #		elsif found =  @elements.find{|e|e.name == method}
+  #			found
+  #		else
+  #			super
+  #		end
+  #	end
 end
 
 class Element
 	attr_accessor :container, :type, :name, :options
 	
 
-	def self.create_by_css(container, type, name, css)
-		new(container, type, name, :css => css)
+	def self.create_by_ole(container, type, name, ole_object)
+		new(container, type, name, :ole_object => ole_object)
 	end
 	
 	def initialize(container,type, name, options)	
@@ -49,25 +59,22 @@ class Element
 		@type = type
 		@name = name
 		@options = options
+    assert !options.blank?
 	end
 
 	def method_missing(method, *args)
-		do_find_element.send(method,*args)
+		result = do_find_element.send(method,*args)
+    if result.is_a?(Float)
+      WP.current_page
+    else
+      result
+    end
 	end
 
 	private
 	def do_find_element
 		@watir_element||= begin
-      if(options[:css])
-         watir_element_class = Watir::Element.by_type(type)
-         watir_element_class.new(container.browser,
-                                 :ole_object,
-                                  container.find_ole_element(css))
-      else
-         @container.browser.find_element(type, options)
-      end
-
-
+      @container.browser.find_element(type, options)
     end
 	end
 end

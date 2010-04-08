@@ -13,8 +13,13 @@ module WatirPatches
 		end
 		
 		module ClassMethod
-			def by_type(type)
-				"Watir::#{type.classify}".constantize
+			def by_type(tag_type)
+        assert tag_type
+        tag_type.downcase!
+        if tag_type=="a"
+           tag_type = "link"
+        end
+				"Watir::#{tag_type.classify}".constantize
 			end
 		end
 		

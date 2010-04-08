@@ -1,14 +1,17 @@
 class Page
-	attr_accessor :host, :path, :name, :elements, :modules
+	attr_accessor :host, :path, :name, :elements, :modules, :reg_path, :attrs, :checker
+	include Container
 	def initialize(name)
 		@name = name.to_sym
 		@elements = []
     @modules  = []
+    @attrs = {}
+    @checker = PageChecker.new(self)
 	end
 	
 	def create_module(name,find_options)
     result = PageModule.new(self, name, find_options)
-    yield result
+    yield result   if block_given?
 		@modules << result
     result
 	end
@@ -33,29 +36,21 @@ class Page
 	
 	def url
 		Util.to_url({:host=>host, :path => path})
-	end
-	
-	def method_missing(method, *args)
-		if /^add_(\w+)/ =~ method.to_s
-			assert args.size>=1
-				
-			options = args.extract_options!
-			self.add_element $1, args.first, options
-		elsif found =  @elements.find{|e|e.name == method}
-			found
-		else
-			super
-		end
-	end
+	end 
 	
 	def browser
 		B
 	end
 
-	def add_element(type, name, options={})
-		@elements||=[]
-		@elements << Element.new(self,type, name, options)
-	end
+  def add_attr(key, value)
+    @attrs[key] = value
+  end
+
+  def abs_css
+    ""
+  end
+
+ 
 end
 
 
