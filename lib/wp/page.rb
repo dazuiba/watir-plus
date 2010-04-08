@@ -50,6 +50,9 @@ class Page
     ""
   end
 
+  def text
+    browser.text
+  end
  
 end
 
