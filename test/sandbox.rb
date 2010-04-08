@@ -1,7 +1,14 @@
-require '../lib/tiny'
-require "page"
-Tiny.test "用户登录  没有特殊要求" do
-  Tiny.goto :host=>"login", :path=>"member/login.jhtml", :params=>"login_type=3"  do|the_page|
+require '../watir_plus'
+require "sandbox_page"
+WP.url_hock do|url|
+  if url.include? "error.php"
+    raise WPExceptions::ErrorPage, "error page 出现， 测试终止！url:#{url} "
+  end
+end
+
+
+WP.test "用户登录  没有特殊要求", :run=>false do
+  WP.goto :host=>"login", :path=>"member/login.jhtml", :params=>"login_type=3"  do|the_page|
     the_page.page_should_be? :login_page
     
     tpl = the_page.create_template :taobao_login do |page, args|
@@ -10,14 +17,14 @@ Tiny.test "用户登录  没有特殊要求" do
       page.login_submit.click
     end
     
-    tpl.try(:username=>"tam_buy",:password=>"wrong") do
-      the_page.page_should_be? :login_page
-
-    end
-
-    tpl.try(:username=>"wrong",:password=>"tam1234") do
-      the_page.page_should_be? :login_page
-    end
+#    tpl.try(:username=>"tam_buy",:password=>"wrong") do
+#      the_page.page_should_be? :login_page
+#			
+#    end
+#
+#    tpl.try(:username=>"wrong",:password=>"tam1234") do
+#      the_page.page_should_be? :login_page
+#    end
 
     tpl.try(:username=>"tam_buy",:password=>"tam1234") do
       the_page.page_should_be? :itaobao_page
@@ -26,28 +33,11 @@ Tiny.test "用户登录  没有特殊要求" do
 end
 
 
-Tiny.test " 搜索商品  要求能够显示商品列表，确保有多余一个商品显示出来，并且校验显示的列是有值的" do
-	 Tiny.goto :host=>"search", :path=>"search", :params=>"q=iphone"  do|the_page|
-    the_page.page_should_be? :search_page
-    
-    search_tpl = the_page.create_template :taobao_search do |page, args|
-      page.username.set args[:username]
-      page.login_submit.click
-    end
-    
-    tpl.try(:username=>"tam_buy",:password=>"wrong") do
-      the_page.page_should_be? :login_page
-			
-    end
-
-    tpl.try(:username=>"wrong",:password=>"tam1234") do
-      the_page.page_should_be? :login_page
-    end
-
-    tpl.try(:username=>"tam_buy",:password=>"tam1234") do
-      the_page.page_should_be? :itaobao_page
-    end
-  end
+WP.test " 搜索商品  要求能够显示商品列表，确保有多余一个商品显示出来，并且校验显示的列是有值的" do
+	 WP.goto :host=>"search", :path=>"search", :params=>"q=iphone"  do|the_page|
+	    the_page.page_should_be? :search_page
+			assert the_page.get_module(:result).list_items.size>0
+   end
 end
 
 
