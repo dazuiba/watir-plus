@@ -2,22 +2,12 @@ require '../watir_plus'
 require "sandbox_page"
 WP.url_hock do|url|
   if url.include? "error.php"
-    raise WPExceptions::ErrorPage, "error page å‡ºç°ï¼?æµ‹è¯•ç»ˆæ­¢ï¼url:#{url} "
+    raise WPExceptions::ErrorPage, "error page ³öÏÖ£¬ ²âÊÔÖÕÖ¹£¡url:#{url} "
   end
 end
 
 
-WP.test :publish do
-	WP.goto "http://sell.tbsandbox.com/auction/publish/publish.htm?auction_type=b" do|page|
-		page.page_should_be? :search_page
-    links = the_page.get_module(:result).title_links
-    assert links.size>10
-    links.map{|e|assert e.text}
-	end
-end
-
-
-WP.test :search_good, :run=>false, :desc=>"æœç´¢å•†å“  è¦æ±‚èƒ½å¤Ÿæ˜¾ç¤ºå•†å“åˆ—è¡¨ï¼Œç¡®ä¿æœ‰å¤šä½™ä¸?¸ªå•†å“æ˜¾ç¤ºå‡ºæ¥ï¼Œå¹¶ä¸”æ ¡éªŒæ˜¾ç¤ºçš„åˆ—æ˜¯æœ‰å?çš? do
+WP.test :search_good, :run=>false, :desc=>"ËÑË÷ÉÌÆ·  ÒªÇóÄÜ¹»ÏÔÊ¾ÉÌÆ·ÁĞ±í£¬È·±£ÓĞ¶àÓàÒ»¸öÉÌÆ·ÏÔÊ¾³öÀ´£¬²¢ÇÒĞ£ÑéÏÔÊ¾µÄÁĞÊÇÓĞÖµµÄ" do
   WP.goto :host=>"search", :path=>"search", :params=>"q=iphone"  do|the_page|
     the_page.page_should_be? :search_page
     links = the_page.get_module(:result).title_links
@@ -27,7 +17,7 @@ WP.test :search_good, :run=>false, :desc=>"æœç´¢å•†å“  è¦æ±‚èƒ½å¤Ÿæ˜¾ç¤ºå•†å“
 end
 
 
-WP.test :user_login, :desc=>"ç”¨æˆ·ç™»å½•  æ²¡æœ‰ç‰¹æ®Šè¦æ±‚", :run=>true do
+WP.test :user_login, :desc=>"ÓÃ»§µÇÂ¼  Ã»ÓĞÌØÊâÒªÇó", :run=>true do
   WP.goto :host=>"login", :path=>"member/login.jhtml", :params=>"login_type=3"  do|the_page|
     the_page.page_should_be? :login_page
     
@@ -43,11 +33,11 @@ WP.test :user_login, :desc=>"ç”¨æˆ·ç™»å½•  æ²¡æœ‰ç‰¹æ®Šè¦æ±‚", :run=>true do
   end
 end
 
-WP.test_flow "è´­ç‰©æµç¨‹" do
+WP.test_flow "¹ºÎïÁ÷³Ì" do
 	username = "tam_buy"
 	password = "tam1234"
   WIN32OLE.codepage =  WIN32OLE::CP_ACP
-  WP.test :detail, :desc=> "æ˜¾ç¤ºå•†å“è¯¦æƒ… " do
+  WP.test :detail, :desc=> "ÏÔÊ¾ÉÌÆ·ÏêÇé " do
     WP.goto "http://item.tbsandbox.com/item_detail.jhtml?item_id=9f1aa2b9f1196c8db3e0b4353f4f9d2d&x_id=db2" do|the_page|
       assert the_page.page_should_be?(:detail_page)
       assert WIN32OLE.codepage ==  WIN32OLE::CP_ACP
@@ -56,7 +46,7 @@ WP.test_flow "è´­ç‰©æµç¨‹" do
     end
   end
    
-  WP.test :buy, :before=>:detail, :desc=> "ç«‹å³è´­ä¹°" do
+  WP.test :buy, :before=>:detail, :desc=> "Á¢¼´¹ºÂò" do
     page = WP.current_page
     
     page.get_module(:select_prop).click_all_first
@@ -74,4 +64,6 @@ WP.test_flow "è´­ç‰©æµç¨‹" do
     page.submit_button.click
     assert page.text.include?("PaidDone")
   end
+
+  
 end

@@ -13,16 +13,6 @@ WP.create_page :itaobao_page do|page|
 end
 
 
-WP.create_page :publish_page do |page|
-	page.host = "sell"
-  page.path = "/publish/publish.htm"
-  page.add_text_field :search, :kv=>"id:title"
-	page.create_module :result, ".list-item" do|list|
-		list.add_links :title_links, ".summary a"
-	end
-end
-
-
 WP.create_page :search_page do|page|
   page.host = "search"
   page.path = "/search"
@@ -35,6 +25,7 @@ end
 WP.create_page :detail_page do|page|
   page.host = "item"
   page.reg_path = "/item_detail(.*)\.jhtml"
+  page.add_text_field :search, :kv=>"id:title"
   page.add_attr(:price,"#J_StrPrice")#价格
   page.add_attr(:shipping_cost,"#ShippingCost em")#快递费
   page.add_attr(:title,"#detail .detail-hd h3")#名称

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp
+END
+util.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/util.rb
+END
+watir_patches.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/watir_patches.rb
+END
+page_checker.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/page_checker.rb
+END
+assert_ext.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/assert_ext.rb
+END
+page_module.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/page_module.rb
+END
+container.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/container.rb
+END
+page_finder.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/page_finder.rb
+END
+string_ext.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/string_ext.rb
+END
+element.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/element.rb
+END
+wp_browser.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/wp_browser.rb
+END
+page.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/repos/test-svnrepos/!svn/ver/27334/automan/code/misc/zhushi/tiny/lib/wp/page.rb
+END
